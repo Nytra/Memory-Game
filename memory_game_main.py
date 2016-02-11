@@ -33,6 +33,7 @@ class Application(Frame):
         self.seq_length = self.num_range
         self.create_widgets()
         self.name = "None"
+        self.debugging = False
         self.name_ent = Entry(self)
         self.name_ent.grid(row = 5, column = 2, sticky = E)
         self.name_ent.insert(0, "None")
@@ -92,7 +93,6 @@ class Application(Frame):
         
         if not self.seq_active:
             if self.enable_messages:
-                print("[INFO] === START ===")
                 print("[EVENT] Button: Start")
             self.name = self.name_ent.get()
             self.thread_beep(500, 100)
@@ -100,6 +100,7 @@ class Application(Frame):
             self.attempt = ""
             self.gen_sequence() #Randomly generates a new sequence
             if self.name == "dev_user":
+                self.debugging = True
                 if self.enable_messages:
                     print("[DEBUG] Sequence:", self.sequence)
             self.thread_sequence() #Initiates multithreading of show_sequence()
@@ -210,7 +211,10 @@ class Application(Frame):
         if self.enable_messages:
             print("[INFO] Writing to %s..." %self.log_name)
         with open(self.log_name, "a") as f:
-            f.write("\n" + str(time.ctime(time.time())) + " / Name: " + self.name + " - Score: " + str(self.score))
+            if not self.debugging:
+                f.write("\n" + str(time.ctime(time.time())) + " / Name: " + self.name + " - Score: " + str(self.score))
+            else:
+                f.write("\n" + str(time.ctime(time.time())) + " / Name: dev_user - Score: " + str(self.score))
         if self.enable_messages:
             print("[INFO] Destroying app...")
         root.destroy()
