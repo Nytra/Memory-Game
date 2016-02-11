@@ -24,7 +24,10 @@ class Application(Frame):
         self.numbers = ["1", "2", "3", "4"]
         self.log_name = "memory_game_log.txt"
         self.check_scorelog()
-        self.path = os.path.abspath("")
+        try:
+            self.path = os.path.abspath("")
+        except:
+            self.path = None
         self.seq_active = False
         self.started = False
         self.seq_length_boundary = 5
@@ -43,7 +46,8 @@ class Application(Frame):
             print("[INFO] Score: " + str(self.score))
             print("[INFO] Sequence length boundary: " + str(self.seq_length_boundary))
             print("[INFO] Log name: " + self.log_name)
-            print("[INFO] Path: %s" %self.path)
+            if self.path:
+                print("[INFO] Path: %s" %self.path)
 
     def thread_main(self):
         t1 = threading.Thread(target=self.check)
@@ -99,7 +103,7 @@ class Application(Frame):
             self.started = False
             self.attempt = ""
             self.gen_sequence() #Randomly generates a new sequence
-            if self.name == "dev_user":
+            if self.name == "$dev_user":
                 self.debugging = True
                 if self.enable_messages:
                     print("[DEBUG] Sequence:", self.sequence)
@@ -214,7 +218,7 @@ class Application(Frame):
             if not self.debugging:
                 f.write("\n" + str(time.ctime(time.time())) + " / Name: " + self.name + " - Score: " + str(self.score))
             else:
-                f.write("\n" + str(time.ctime(time.time())) + " / Name: dev_user - Score: " + str(self.score))
+                f.write("\n" + str(time.ctime(time.time())) + " / Name: $dev_user - Score: " + str(self.score))
         if self.enable_messages:
             print("[INFO] Destroying app...")
         root.destroy()
