@@ -1,9 +1,9 @@
 #Memory Game
-#Made by Sam Scott 12E
+#Made by Sam Scott
 #10-02-2016
 #Python version 3.5.1
 #GitHub Repo: https://github.com/Nytra/Memory-Game
-__author__ = "Sam Scott"
+__author__ = "Sam Scott <samueltscott@gmail.com>"
 from tkinter import *
 import random, threading, time, os
 try:
