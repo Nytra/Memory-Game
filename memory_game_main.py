@@ -2,6 +2,7 @@
 #Made by Sam Scott 12E
 #10-02-2016
 #Python version 3.5.1
+#GitHub Repo: https://github.com/Nytra/Memory-Game
 __author__ = "Sam Scott"
 from tkinter import *
 import random, threading, time, os
