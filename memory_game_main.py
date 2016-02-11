@@ -38,8 +38,10 @@ class Application(Frame):
         self.name = "None"
         self.debugging = False
         self.name_ent = Entry(self)
-        self.name_ent.grid(row = 5, column = 2, sticky = E)
-        self.name_ent.insert(0, "None")
+        self.name_ent.grid(row = 5, column = 2, sticky = W)
+        self.name_ent.insert(0, "Enter your name here")
+        self.submit_name_bttn = Button(self, text = "Submit Name", command = self.submit_name, bg = "purple", fg = "white")
+        self.submit_name_bttn.grid(row = 5, column = 2, sticky = E)
         if self.enable_messages:
             print("[INFO] You can disable these debugging messages by changing self.enable_messages to False on line 22 of the code.")
             print("[INFO] Sequence length: " + str(self.num_range))
@@ -175,6 +177,11 @@ class Application(Frame):
     def gen_sequence(self): #Generates the sequence
         self.sequence = "".join(random.choice(self.numbers) for x in range(self.num_range))
 
+    def submit_name(self):
+        self.name = self.name_ent.get().strip()
+        self.name_ent.grid_forget()
+        self.submit_name_bttn.grid_forget()
+
     def create_widgets(self):                                                                      
         self.bttn1 = Button(self, text = "\n\t1\t\n\n", command = lambda: self.button_press(1), font=("Helvetica", 12, "bold"), bg = "white", relief = SUNKEN) #lambda allows to me pass arguments to the functions
         self.bttn1.grid(row = 1, column = 0, sticky = W)
@@ -192,8 +199,6 @@ class Application(Frame):
         self.sequence_length_lbl.grid(row = 2, column = 2, sticky = E)
         self.info_lbl = Label(self, text = "Copyright Trolley Industries 2016 - All rights reserved", anchor = W, justify = LEFT, bg = "black", fg = "white")
         self.info_lbl.grid(row = 4, column = 2, sticky = E)
-        self.name_lbl = Label(self, text = "Name:", bg = "black", fg = "white")
-        self.name_lbl.grid(row = 5, column = 2, sticky = W)
         self.widgets = [self.bttn1, self.bttn2, self.bttn3, self.bttn4, self.start_bttn, self.score_lbl, self.sequence_length_lbl, self.info_lbl]
 
     def check_scorelog(self):
@@ -209,8 +214,7 @@ class Application(Frame):
     def on_delete(self):
         if self.enable_messages:
             print("[INFO] Interrupted: WM_DELETE_WINDOW")
-        self.name = self.name_ent.get()
-        if self.name == "":
+        if self.name == "" or self.name == "Enter your name here":
             self.name = "None"
         if self.enable_messages:
             print("[INFO] Writing to %s..." %self.log_name)
