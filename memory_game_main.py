@@ -205,7 +205,7 @@ class Application(Frame):
         try:
             with open(self.log_name, "r") as f:
                 f.read()
-        except FileNotFoundError:
+        except:
             if self.enable_messages:
                 print("[INFO] Creating %s..." %self.log_name)
             with open(self.log_name, "w") as f:
