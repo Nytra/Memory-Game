@@ -43,13 +43,14 @@ class Application(Frame):
         self.submit_name_bttn = Button(self, text = "Submit Name", command = self.submit_name, bg = "purple", fg = "white")
         self.submit_name_bttn.grid(row = 5, column = 2, sticky = E)
         if self.enable_messages:
-            print("[INFO] You can disable these debugging messages by changing self.enable_messages to False on line 22 of the code.")
+            print("[INFO] You can disable these messages by changing self.enable_messages to False on line 22 of the code.")
             print("[INFO] Sequence length: " + str(self.num_range))
             print("[INFO] Score: " + str(self.score))
             print("[INFO] Sequence length boundary: " + str(self.seq_length_boundary))
             print("[INFO] Log name: " + self.log_name)
             if self.path:
                 print("[INFO] Path: %s" %self.path)
+            print("[INFO] Set name to \"$dev_user\" to enable debugging.")
 
     def thread_main(self):
         t1 = threading.Thread(target=self.check)
@@ -79,6 +80,7 @@ class Application(Frame):
         self.bttn4["relief"] = "raised"
 
     def reset_buttons(self):
+        """Resets button settings to their initial values"""
         self.bttn1["bg"] = "white"
         self.bttn2["bg"] = "white"
         self.bttn3["bg"] = "white"
@@ -113,7 +115,8 @@ class Application(Frame):
             self.started =  True
             self.thread_main() #Initiates multithreading of the check() function
 
-    def set_options(self, item, value, targets):
+    def set_options(self, item, value, targets=[], exceptions=[]):
+        """Mainly for ease of use. Allows me to change values for multiple widgets at once."""
         if not targets:
             for x in self.widgets:
                 if x not in exceptions:
@@ -123,10 +126,11 @@ class Application(Frame):
                 x[item] = value
 
     def thread_beep(self, pitch, duration):
+        """Allows beeping while other processes are running. Avoids program hanging."""
         try:
             t4 = threading.Thread(target=winsound.Beep, args=(pitch, duration))
             t4.start()
-        except:
+        except: #If the PC is running on an OS that isn't Windows, beeping won't work.
             pass
                 
     def check(self):
@@ -175,14 +179,17 @@ class Application(Frame):
                 self.configure(background="black")
 
     def gen_sequence(self): #Generates the sequence
+        """Generates a sequence of numbers of preset length."""
         self.sequence = "".join(random.choice(self.numbers) for x in range(self.num_range))
 
     def submit_name(self):
+        """Allows the user to set a name to be entered in the score log. If a name is not entered, \"None\" is entered in the score log."""
         self.name = self.name_ent.get().strip()
         self.name_ent.grid_forget()
         self.submit_name_bttn.grid_forget()
 
-    def create_widgets(self):                                                                      
+    def create_widgets(self):
+        """Creates the tkinter widgets"""
         self.bttn1 = Button(self, text = "\n\t1\t\n\n", command = lambda: self.button_press(1), font=("Helvetica", 12, "bold"), bg = "white", relief = SUNKEN) #lambda allows to me pass arguments to the functions
         self.bttn1.grid(row = 1, column = 0, sticky = W)
         self.bttn2 = Button(self, text = "\n\t2\t\n\n", command = lambda: self.button_press(2), font=("Helvetica", 12, "bold"), bg = "white", relief = SUNKEN)
@@ -202,6 +209,7 @@ class Application(Frame):
         self.widgets = [self.bttn1, self.bttn2, self.bttn3, self.bttn4, self.start_bttn, self.score_lbl, self.sequence_length_lbl, self.info_lbl]
 
     def check_scorelog(self):
+        """Checks to see if the scorelog exists. If it doesn't then a new one is created."""
         try:
             with open(self.log_name, "r") as f:
                 f.read()
@@ -212,6 +220,7 @@ class Application(Frame):
                 f.write("Score Log - Created on: " + str(time.ctime(time.time())))
     
     def on_delete(self):
+        """Creates a new entry in the scorelog when the tkinter GUI is closed using the Windows cross/exit button."""
         if self.enable_messages:
             print("[INFO] Interrupted: WM_DELETE_WINDOW")
         if self.name == "" or self.name == "Enter your name here":
@@ -227,7 +236,7 @@ class Application(Frame):
             print("[INFO] Destroying app...")
         root.destroy()
         if self.enable_messages:
-            print("[INFO] Done.")
+            print("[INFO] Done.\n[INFO] End of program.")
         
     def button_press(self, num): #Handles button press events
         if self.started:
@@ -241,6 +250,7 @@ class Application(Frame):
         
 
 def main():
+    """Runs when the program is executed as __main__ (ie not imported)"""
     global root, app
     root = Tk()
     root.title("Sam's Memory Game V1")
